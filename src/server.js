@@ -1,32 +1,42 @@
 import express from "express";
-import { mapOrder } from "~/utils/sorts.js";
+import { CONNECT_DB, GET_DB, CLOSE_DB } from "~/config/mongodb"; // Import database configuration
+import exitHook from "async-exit-hook";
+import "dotenv/config"; // Load environment variables from .env file
+import { env } from "~/config/environment"; // Import environment variables
+const START_SERVER = () => {
+    const app = express();
 
-const app = express();
+    app.get("/", async (req, res) => {
+        res.end("<h1>Hello World!</h1><hr>");
+    });
 
-const hostname = "localhost";
-const port = 8017;
+    app.listen(env.APP_PORT, env.APP_HOST, () => {
+        // eslint-disable-next-line no-console
+        console.log(
+            `Hello ${env.AUTHOR}, I am running at http://${env.APP_HOST}:${env.APP_PORT}/`
+        );
+    });
+    exitHook(() => {
+        CLOSE_DB();
+    });
+};
 
-app.get("/", (req, res) => {
-    // Test Absolute import mapOrder
-    console.log(
-        mapOrder(
-            [
-                { id: "id-1", name: "One" },
-                { id: "id-2", name: "Two" },
-                { id: "id-3", name: "Three" },
-                { id: "id-4", name: "Four" },
-                { id: "id-5", name: "Five" },
-            ],
-            ["id-5", "id-4", "id-2", "id-3", "id-1"],
-            "id"
-        )
-    );
-    res.end("<h1>Hello World!</h1><hr>");
-});
+(async () => {
+    try {
+        console.log("Connecting to MongoDB...");
+        await CONNECT_DB();
+        console.log("Connected to MongoDB successfully.");
+        START_SERVER();
+    } catch (error) {
+        console.error("Error connecting to MongoDB:", error);
+        process.exit(0);
+    }
+})();
 
-app.listen(port, hostname, () => {
-    // eslint-disable-next-line no-console
-    console.log(
-        `Hello Trung Quan Dev, I am running at http://${hostname}:${port}/`
-    );
-});
+// CONNECT_DB()
+//     .then(() => console.log("Connect to Mongo"))
+//     .then(() => START_SERVER())
+//     .catch((error) => {
+//         console.error("Error connecting to MongoDB:", error);
+//         process.exit(0);
+//     });
