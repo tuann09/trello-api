@@ -1,6 +1,6 @@
 import express from "express";
 import { StatusCodes } from "http-status-codes";
-import { boardRouters } from "./boardRoutes";
+import { boardRouter } from "./boardRoute";
 const Router = express.Router();
 Router.get("/status", (req, res) => {
     res.status(StatusCodes.OK).json({
@@ -8,5 +8,5 @@ Router.get("/status", (req, res) => {
         message: "Board service is running",
     });
 });
-Router.use("/boards", boardRouters); // Use the board routes under /boards
+Router.use("/boards", boardRouter); // Use the board routes under /boards
 export const APIs_V1 = Router;
