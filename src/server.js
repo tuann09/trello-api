@@ -3,12 +3,11 @@ import { CONNECT_DB, GET_DB, CLOSE_DB } from "~/config/mongodb"; // Import datab
 import exitHook from "async-exit-hook";
 import "dotenv/config"; // Load environment variables from .env file
 import { env } from "~/config/environment"; // Import environment variables
+import { APIs_V1 } from "~/routes/v1"; // Import API routes
 const START_SERVER = () => {
     const app = express();
 
-    app.get("/", async (req, res) => {
-        res.end("<h1>Hello World!</h1><hr>");
-    });
+    app.use("/v1", APIs_V1); // Use the API routes
 
     app.listen(env.APP_PORT, env.APP_HOST, () => {
         // eslint-disable-next-line no-console
