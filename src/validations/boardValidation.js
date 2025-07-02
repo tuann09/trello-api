@@ -11,7 +11,7 @@ const createNew = async (req, res, next) => {
             "string.max": "Title must not exceed 50 characters",
             "string.base": "Title must be a string",
         }),
-        description: Joi.string().required().min(3).max(256).trim().strict(),
+        description: Joi.string().required().min(3).max(255).trim().strict(),
     });
 
     try {
