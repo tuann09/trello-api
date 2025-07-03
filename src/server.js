@@ -1,4 +1,6 @@
 import express from "express";
+import cors from "cors";
+import { corsOptions } from "./config/cors";
 import { CONNECT_DB, GET_DB, CLOSE_DB } from "~/config/mongodb"; // Import database configuration
 import exitHook from "async-exit-hook";
 import "dotenv/config"; // Load environment variables from .env file
@@ -7,6 +9,8 @@ import { APIs_V1 } from "~/routes/v1"; // Import API routes
 import { errorHandlingMiddleware } from "~/middlewares/errorHandlingMiddleware"; // Import error handling middleware
 const START_SERVER = () => {
     const app = express();
+    //Xu lý CORS
+    app.use(cors(corsOptions));
 
     app.use(express.json());
 
