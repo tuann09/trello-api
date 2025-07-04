@@ -2,10 +2,11 @@ import Joi from "joi";
 
 import { GET_DB } from "~/config/mongodb";
 import { ObjectId } from "mongodb";
-import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from "~/utils/validators";
+
 import { BOARD_TYPES } from "~/utils/constants";
 import { columnModel } from "./columnModel";
 import { cardModel } from "./cardModel";
+import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from "~/utils/validators";
 //Define collection
 const BOARD_COLLECTION_NAME = "boards ";
 const BOARD_COLLECTION_SCHEMA = Joi.object({
@@ -85,10 +86,27 @@ const getDetails = async (id) => {
         throw new Error(error);
     }
 };
+const pushColumnOrderIds = async (column) => {
+    try {
+        const result = await GET_DB()
+            .collection(BOARD_COLLECTION_NAME)
+            .findOneAndUpdate(
+                {
+                    _id: new ObjectId(column.boardId),
+                },
+                { $push: { columnOrderIds: new ObjectId(column._id) } },
+                { returnDocument: "after" }
+            );
+        return result.value;
+    } catch (error) {
+        throw new Error(error);
+    }
+};
 export const boardModel = {
     BOARD_COLLECTION_NAME,
     BOARD_COLLECTION_SCHEMA,
     createNew,
     findOneById,
     getDetails,
+    pushColumnOrderIds,
 };
