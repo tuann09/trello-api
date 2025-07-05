@@ -8,9 +8,7 @@ const createNew = async (req, res, next) => {
         //     "This is a test error from the boardController"
         // );
         const createdBoard = await boardService.createNew(req.body);
-        res.status(StatusCodes.CREATED).json({
-            createdBoard,
-        });
+        res.status(StatusCodes.CREATED).json(createdBoard);
     } catch (error) {
         next(error);
     }
