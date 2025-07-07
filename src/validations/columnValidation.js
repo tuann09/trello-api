@@ -24,7 +24,35 @@ const createNew = async (req, res, next) => {
         next(customError);
     }
 };
+const update = async (req, res, next) => {
+    //Update thi khong dung required
+    const correctCondition = Joi.object({
+        // boardId: Joi.string()
+        //     .pattern(OBJECT_ID_RULE)
+        //     .message(OBJECT_ID_RULE_MESSAGE),
+        title: Joi.string().min(3).max(50).trim().strict(),
+        cardOrderIds: Joi.array().items(
+            Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
+        ),
+    });
+
+    try {
+        await correctCondition.validateAsync(req.body, {
+            abortEarly: false,
+            allowUnknown: true, // Allow other fields that are not specified in the schema
+        });
+        next();
+    } catch (error) {
+        const errorMessages = new Error(error).message;
+        const customError = new ApiError(
+            StatusCodes.UNPROCESSABLE_ENTITY,
+            errorMessages
+        );
+        next(customError);
+    }
+};
 
 export const columnValidation = {
     createNew,
+    update,
 };
