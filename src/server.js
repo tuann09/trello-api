@@ -17,13 +17,22 @@ const START_SERVER = () => {
     app.use("/v1", APIs_V1); // Use the API routes
 
     app.use(errorHandlingMiddleware);
+    if (env.BUILD_MODE === "production") {
+        app.listen(process.env.PORT, () => {
+            // eslint-disable-next-line no-console
+            console.log(
+                `Production: Hello ${env.AUTHOR}, Back-end Server is running at Port: ${process.env.PORT}`
+            );
+        });
+    } else {
+        app.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
+            // eslint-disable-next-line no-console
+            console.log(
+                `Hello ${env.AUTHOR}, I am running at http://${env.LOCAL_DEV_APP_HOST}:${env.LOCAL_DEV_APP_PORT}`
+            );
+        });
+    }
 
-    app.listen(env.APP_PORT, env.APP_HOST, () => {
-        // eslint-disable-next-line no-console
-        console.log(
-            `Hello ${env.AUTHOR}, I am running at http://${env.APP_HOST}:${env.APP_PORT}/`
-        );
-    });
     exitHook(() => {
         CLOSE_DB();
     });
